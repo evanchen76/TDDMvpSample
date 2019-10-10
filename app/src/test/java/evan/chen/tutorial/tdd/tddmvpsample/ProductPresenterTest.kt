@@ -1,5 +1,6 @@
 package evan.chen.tutorial.tdd.tddmvpsample
 
+import evan.chen.tutorial.tdd.tddmvpsample.api.ProductResponse
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -13,11 +14,21 @@ class ProductPresenterTest {
     @Mock
     private lateinit var repository: IProductRepository
 
+    @Mock
+    private lateinit var view: ProductContract.IProductView
+
+    private var productResponse = ProductResponse()
+
+
     @Before
     fun setupPresenter() {
         MockitoAnnotations.initMocks(this)
-        presenter = ProductPresenter(repository)
+        presenter = ProductPresenter(repository, view)
 
+        productResponse.id = "pixel3"
+        productResponse.name = "Google Pixel 3"
+        productResponse.price = 27000
+        productResponse.desc = "Desc"
     }
 
     @Test
@@ -27,6 +38,10 @@ class ProductPresenterTest {
 
         val loadProductCallbackCaptor = argumentCaptor<IProductRepository.LoadProductCallback>()
         verify(repository).getProduct(eq(productId), capture(loadProductCallbackCaptor))
+
+        loadProductCallbackCaptor.value.onProductResult(productResponse)
+
+        verify(view).onGetResult(productResponse)
 
     }
 }
