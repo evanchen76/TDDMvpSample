@@ -10,7 +10,7 @@ class ProductPresenter(
     override fun getProduct(productId: String) {
         repository.getProduct(productId, object : IProductRepository.LoadProductCallback{
             override fun onProductResult(productResponse: ProductResponse) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                view.onGetResult(productResponse)
             }
 
         })
